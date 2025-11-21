@@ -17,6 +17,28 @@ Java에서 DBMS와 통신하기 위한 표준 API.
 3. 쿼리 결과(ResultSet 등) 처리
 4. Connection 닫기(해제)
 
+<details>
+<summary>Connection</summary>
+
+DB와 통신을 할 수 있게 해주는, 연결을 표현한 객체이다.
+
+</details>
+
+<details>
+<summary>DriverManager</summary>
+
+JDBC 드라이버를 가져오고 URL등의 입력된 정보를 바탕으로 DB연결(Connection)을 생성해 주는 클래스
+
+</details>
+
+<details>
+<summary>Driver</summary>
+
+특정 장치(또는 시스템)와 OS/프로그램 사이를 이어주는 소프트웨어 인터페이스이다.
+이 인터페이스를 구현한 프로그램을 XXX드라이버라고 한다.
+
+</details>
+
 **문제점**
 
 - 매번 Connection을 새로 만드는 작업은 비용이 큼
@@ -143,3 +165,8 @@ List<T> query(String sql, RowMapper<T> rowMapper, Object... args)
 |          | Java 21 (LTS)    | JDK 21         |
 
 </details>
+
+# 3줄 요약
+1. Java 프로그램에서 DB와 연동 하려면 JDBC를 사용해야된다.  
+2. Spring에서 JDBC를 사용하는 방법중 하나는 JdbcTemplate이고, DataSource 객체를 생성해 JdbcTemplate에 주입 해 주어야 사용할 수 있다.  
+3. Connection pool은 connection을 미리 연결해 두고 관리한다.
