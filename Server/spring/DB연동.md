@@ -1,0 +1,145 @@
+# Spring DB 연동
+
+## DB 연동 방식
+
+## JDBC API
+
+### JDBC란
+**Java DataBase Connectivity**  
+Java에서 DBMS와 통신하기 위한 표준 API.
+
+### JDBC 사용 방식
+
+#### DriverManager
+
+1. `DriverManager`에게 `getConnection()` 호출하여 DB 정보로 연결(Connection 생성)
+2. Connection 객체에서 `prepareStatement(String sql)` 또는 `createStatement()`로 쿼리 전송
+3. 쿼리 결과(ResultSet 등) 처리
+4. Connection 닫기(해제)
+
+**문제점**
+
+- 매번 Connection을 새로 만드는 작업은 비용이 큼
+- Connection 생성/종료 코드가 반복됨
+
+**해결방법**
+
+- DB 연결을 여러 개 미리 생성해 두고 재사용하기(Connection Pool)
+- 개발자가 직접 Connection을 열고 닫는 반복 코드를 제거하고, 공통화된 관리 제공
+
+<details>
+<summary>Connection Pool</summary>
+
+Connection을 미리 여러 개 만들어 두고 “재사용”하는 방식.  
+Tomcat JDBC Pool, HikariCP 같은 라이브러리가 관리한다.  
+Connection을 계속 생성/종료하는 비용을 줄이고, 성능을 크게 높인다.
+
+</details>
+
+---
+
+## DataSource
+
+- DriverManager 대신 **Connection Pool 을 다루는 표준 인터페이스**
+- Spring은 내부적으로 `DataSource`를 통해 Connection을 얻는다.
+- Connection Pool 구현체(Tomcat JDBC, HikariCP 등)가 DataSource를 구현한다.
+
+---
+
+## JPA, MyBatis
+
+- JDBC API의 중복·반복 코드 문제를 해결하기 위해 등장한 프레임워크들  
+- 내부적으로 JDBC를 사용하지만, SQL 작성과 매핑 코드를 간소화한다
+
+---
+
+# Spring에서의 DB 연동 방식
+
+## 1. DataSource 설정
+
+Spring은 DataSource 빈을 등록하고,  
+DB 연동이 필요한 빈들은 이 DataSource를 **주입받아 Connection을 사용한다.**
+
+<details>
+<summary>빈(Bean)</summary>
+
+Spring 컨테이너에서 생성·관리되는 객체.
+
+</details>
+
+<details>
+<summary>주입(Injection)</summary>
+
+Spring이 빈을 다른 빈에 자동으로 넣어주는 기능.  
+Constructor Injection(생성자 주입), Setter Injection(세터 주입) 등이 있음.
+
+</details>
+
+---
+
+## 2. JdbcTemplate 사용
+
+### JdbcTemplate이란
+
+Spring이 제공하는 JDBC 편의 클래스.  
+Connection 생성, PreparedStatement 생성, 예외 처리, 리소스 정리 등을 자동으로 수행해  
+개발자는 **SQL과 매핑 코드만 작성**하면 된다.
+
+### 1. JdbcTemplate 객체 생성
+
+```java
+JdbcTemplate template = new JdbcTemplate(dataSource);
+```
+
+DataSource를 생성자 주입하여 생성한다.
+
+### 2. JdbcTemplate 조회 쿼리
+
+`JdbcTemplate`의 `query()` 메서드를 사용하여 DB 데이터를 조회한다.
+
+```java
+List<T> query(String sql, RowMapper<T> rowMapper)
+List<T> query(String sql, Object[] args, RowMapper<T> rowMapper)
+List<T> query(String sql, RowMapper<T> rowMapper, Object... args)
+```
+
+- `RowMapper<T>` : ResultSet → 객체 변환 담당
+
+
+<details>
+<summary>Object... 은 참조 타입일까?</summary>
+
+`...` 은 **가변 인자(Varargs)** 로, 주어진 타입(T)의 인자를 0개 이상 받을 수 있다.
+
+예:  
+`Object... args` → `Object arg1, Object arg2, ...` 여러 개 전달 가능
+
+- Java 5에서 추가된 문법  
+- 컴파일 시 `T...` → `T[]` 배열로 변환됨 (언어 사양에 명시됨)  
+- 즉, `Object... args` 는 내부적으로 `Object[] args` 와 동일  
+
+</details>
+
+
+<details>
+<summary>Java Version History</summary>
+
+| 변환 방식 | 브랜드           | 기술버전(JDK) |
+|----------|------------------|----------------|
+| 1        | Java 1.0         | JDK 1.0        |
+|          | Java 1.1         | JDK 1.1        |
+| 2        | Java 2 (1.2)     | JDK 1.2        |
+|          | Java 2 (1.3)     | JDK 1.3        |
+|          | Java 2 (1.4)     | JDK 1.4        |
+| 3        | Java 5           | JDK 1.5        |
+|          | Java 6           | JDK 1.6        |
+|          | Java 7           | JDK 1.7        |
+|          | Java 8           | JDK 1.8        |
+| 4        | Java 9           | JDK 9          |
+|          | Java 10          | JDK 10         |
+|          | ...              | ...            |
+|          | Java 11 (LTS)    | JDK 11         |
+|          | Java 17 (LTS)    | JDK 17         |
+|          | Java 21 (LTS)    | JDK 21         |
+
+</details>
