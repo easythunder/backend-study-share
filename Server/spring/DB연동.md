@@ -131,12 +131,14 @@ List<T> query(String sql, RowMapper<T> rowMapper, Object... args)
 <details>
 <summary>Object... 은 참조 타입일까?</summary>
 
-`...` 은 **가변 인자(Varargs)** 로, 주어진 타입(T)의 인자를 0개 이상 받을 수 있다.
+`...` 은 **가변 인자(Varargs)** 로, 마지막 파라미터에서 주어진 타입(T)의 인자를 0개 이상 받을 수 있다.
 
 예:  
 `Object... args` → `Object arg1, Object arg2, ...` 여러 개 전달 가능
 
 - Java 5에서 추가된 문법  
+- 가변인자 작성 시 혼합 배열 표기법 사용하지 못한다.(컴파일 애러)  
+- 예시 int[][]... i은 가능 하지만 int[]... i[]은 가능 하지 않다.  
 - 컴파일 시 `T...` → `T[]` 배열로 변환됨 (언어 사양에 명시됨)  
 - 즉, `Object... args` 는 내부적으로 `Object[] args` 와 동일  
 
