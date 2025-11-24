@@ -28,6 +28,16 @@ DB와 통신을 할 수 있게 해주는, 연결을 표현한 객체이다.
 <summary>DriverManager</summary>
 
 JDBC 드라이버를 가져오고 URL등의 입력된 정보를 바탕으로 DB연결(Connection)을 생성해 주는 클래스
+  
+  
+Connection 생성할 수 있는 DriverManager클래스의 메소드  
+- `getConnection(String url, String user, String password)` : url에 DB URL 정보, user에 사용자 계정, password에 계정 비밀번호를 넣는다.
+- `getConnection(String url)` : url에 (DB URL, user, password) 정보 들어가 있다.
+- `getConnection(String url, Properties info)` : url에 DB URL정보가 들어 있고, Properties에 key, value로 user와 password가 들어가 있다.  
+
+
+`DB URL` 구성요소  
+- jdbc(프로토콜) : Subprotocol(DBMS종류)://Subname(접속 대상 위치 정보(host:port:databaseName))[옵션(?key=value)]
 
 </details>
 
