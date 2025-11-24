@@ -85,7 +85,8 @@ Connection을 계속 생성/종료하는 비용을 줄이고, 성능을 크게 �
 
 - DriverManager 대신 **Connection Pool 을 다루는 표준 인터페이스**
 - Spring은 내부적으로 `DataSource`를 통해 Connection을 얻는다.
-- Connection Pool 구현체(Tomcat JDBC, HikariCP 등)가 DataSource를 구현한다.
+- Connection Pool 구현체(Tomcat JDBC, HikariCP 등)가 DataSource를 구현한다.  
+- DataSource는 인터페이스이기 때문에, DB가 바뀌거나 connection pool이 바뀌어도 비즈니스코드 변경없이, DataSource구현체 클래스와 설정만 바꾸면 된다.
 
 ---
 
