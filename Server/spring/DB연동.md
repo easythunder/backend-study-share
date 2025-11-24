@@ -94,6 +94,23 @@ Connection을 계속 생성/종료하는 비용을 줄이고, 성능을 크게 �
 - JDBC API의 중복·반복 코드 문제를 해결하기 위해 등장한 프레임워크들  
 - 내부적으로 JDBC를 사용하지만, SQL 작성과 매핑 코드를 간소화한다
 
+<details>
+<summary><code>피드백</code> DB 연동 방식을 바꿀 일이 생겼을 때(MySQL → PostgreSQL, JDBC → JPA),
+어떤 구조로 프로젝트를 짜두면 변경 비용이 줄어드나요?</summary>
+
+3-Layer 아키텍처를 적용하고 Repository를 인터페이스 기반으로 주입(DI)하면  
+DB 종류나 연동 기술이 바뀌어도 Service와 Controller 코드를 수정할 필요가 없어  
+변경 비용을 크게 줄일 수 있습니다.
+
+- **DB 종류 변경(MySQL → PostgreSQL)**  
+  DataSource 인터페이스 덕분에 설정만 변경하면 교체할 수 있어 코드 변경이 없습니다.
+
+- **DB 기술 변경(JDBC → JPA)**  
+  Repository **구현체**만 교체하면 되므로 변경 비용이 발생하지만  
+  Service와 Controller는 영향을 받지 않습니다.
+
+</details>
+
 ---
 
 # Spring에서의 DB 연동 방식
