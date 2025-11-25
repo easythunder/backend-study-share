@@ -1,82 +1,100 @@
-# Readme.md
+# 📚 Backend Study Repository
 
-**디렉토리 구조**
+백엔드 개발 역량 강화를 위해 **DB / Spring / 알고리즘 / Linux** 영역을 체계적으로 정리하는 스터디 저장소입니다.  
+브랜치 전략·PR 프로세스·커밋 규칙을 명확하게 정의해 협업 효율을 높입니다.
 
-**backend-study/**
+---
 
-**├─ DB/mysql/**
+## 📁 디렉토리 구조
+```
+backend-study/  
+├─ DB/mysql/  
+├─ Server/spring/  
+├─ Algorithm/  
+└─ OS/linux/
+```
 
-**├─ Server/spring/**
+### 📌 각 디렉토리 역할
 
-**├─ Algorithm/**
+- **DB/mysql/**  
+  MySQL 쿼리, 인덱스, 트랜잭션, JOIN, ERD 설계 등 DB 핵심 개념
 
-**└─ OS/linux/**
+- **Server/spring/**  
+  Spring Core / Boot / MVC / JPA / 실습 코드
 
-- **DB-mysql** → MySQL 쿼리, 인덱스, 트랜잭션, ERD 설계 등
-- **Server-Spring** → Spring Core, Boot, MVC, JPA, 실습 코드
-- **Algorithm** → 알고리즘 풀이(BOJ/Programmers), 자료구조 정리
-- **OS-linux** → 리눅스 명령어, OS 이론, 프로세스/메모리 정리
+- **Algorithm/**  
+  알고리즘 풀이(BOJ/Programmers), 자료구조 개념
 
-**브랜치 전략**
+- **OS/linux/**  
+  리눅스 명령어, 프로세스/메모리, OS 이론 정리
 
-**1. main 브랜치**
+---
 
-- 스터디 최종 정리본
-- PR 승인 후에만 반영
+## 🌿 브랜치 전략
+
+### 1️⃣ main
+- 스터디의 **최종/검증된 정리본**  
 - 안정적인 문서/코드만 유지
+- PR 승인 후에만 반영
 
-**2. summary 브랜치**
 
+### 2️⃣ summary
 - 팀 공용 요약/정리본 저장
 - 주제별 핵심 개념 모아놓는 브랜치
 - Markdown 위주
+- PR 승인 후에만 반영
 
-**3. study-이름 브랜치**
-
+### 3️⃣ study-이름
 - 개인 자유 학습 공간
 - 실습 코드, 예제, 필기, 기록 등 전부 가능
 - 원하는 만큼 push 가능
 
-4.feature 브랜치
+### 4️⃣ feature/*
+- 디렉토리 구조 개편, 레포 전체 리팩토링 등 구조 변경 작업 전용
 
-- 구조 수정
 
-Git Emoji - Type
 
-Emoji Type: Content
+## 📌 원칙
 
-Type : 첫글자 소문자
+- `study` → `summary` : 개인 학습 내용 검토 요청  
+- `summary` → `main` : 한 챕터 당 학습내용 최종 반영  
+- `feature/*` → `main` : 구조 변경/리팩토링 병합  
 
-Content : 한국어로 쓰는걸로
+---
 
-feat : 공부 내용 추가
+## 📝 Commit Message 규칙
 
-docs : 문서/운영 내용 추가
+### 🔍 커밋 메시지 규칙 예시
 
-fix : 내용 오류 수정
+`emoji` `type:` `한글로 제목 작성`
 
-refactor : 정리 구조 변경
+- 새로운 내용 추가 → `:sparkles: feat: ...`
+- 피드백 반영/설명 보강 → `:bulb: feat: ...`
 
-chore : 파일/폴더/세팅 변경
 
-style : 포맷팅/마크다운 스타일 변경
+### 🔠 Type (소문자로 작성)
 
-✨ (:sparkles:) 새 내용/기능
+| Type | 의미 |
+|------|------|
+| feat | 공부 내용 추가 |
+| docs | 문서/운영 내용 |
+| fix | 잘못된 내용 수정 |
+| refactor | 구조/정리 방식 변경 |
+| chore | 파일/폴더/세팅 변경 |
+| style | 포맷팅/마크다운 스타일 |
 
-✏️ (:pencil2:) 오타
 
-🐛 (:bug:) 잘못된 내용 수정
+### ✨ Git Emoji 규칙
 
-♻️ (:recycle:) 구조 변경
+| 이모지 | 코드 | 의미 |
+|--------|-------|------|
+| ✨ | :sparkles: | 완전히 새로운 내용/기능 추가 |
+| 💡 | :bulb: | 개념 보강, 예제 추가, 피드백 반영(보완용 feat) |
+| ✏️ | :pencil2: | 오타 수정 |
+| 🐛 | :bug: | 잘못된 내용 수정 |
+| ♻️ | :recycle: | 구조 변경, 리팩토링 |
+| 🎨 | :art: | 포맷/스타일 개선 |
+| 🔧 | :wrench: | 세팅/환경/폴더 변경 |
+| 📝 | :memo: | 문서 작업 |
+| 🚀 | :rocket: | 신규 프로젝트 생성 |
 
-💡 (:bulb:) 예제 코드/개념 추가
-
-🎨 (:art:) 포맷
-
-———
-
-🔧 (:wrench:) 세팅/폴더/환경
-
-📝 (:memo:) 문서 전용
-
-🚀 (:rocket:) 새 프로젝트 생성
