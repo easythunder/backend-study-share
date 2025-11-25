@@ -99,9 +99,8 @@ Connection을 계속 생성/종료하는 비용을 줄이고, 성능을 크게 �
 <summary><code>피드백</code> DB 연동 방식을 바꿀 일이 생겼을 때(MySQL → PostgreSQL, JDBC → JPA),
 어떤 구조로 프로젝트를 짜두면 변경 비용이 줄어드나요?</summary>
 
-3-Layer 아키텍처를 적용하고 Repository를 인터페이스 기반으로 주입(DI)하면  
-DB 종류나 연동 기술이 바뀌어도 Service와 Controller 코드를 수정할 필요가 없어  
-변경 비용을 크게 줄일 수 있습니다.
+3-Layer 아키텍처로 설계하고 DataSource로 DB연결을 추상화 하면 DB종류 변경 시 설정 파일만 수정하면 되고,  
+Repository를 인터페이스 기반으로 구현하고 의존성을 주입(DI)하면 DB 접근 프레임워크 변경 시 결합도가 낮아져 변경 비용을 줄일 수 있습니다.
 
 - **DB 종류 변경(MySQL → PostgreSQL)**  
   DataSource 인터페이스 덕분에 설정만 변경하면 교체할 수 있어 코드 변경이 없습니다.
