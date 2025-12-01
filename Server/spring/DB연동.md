@@ -1,31 +1,103 @@
 # Spring DB 연동
 
-## DB 연동 방식
-
 ## JDBC API
 
 ### JDBC란
 **Java DataBase Connectivity**  
-Java에서 DBMS와 통신하기 위한 표준 API.
+Java에서 DBMS와 통신하기 위한 Java 표준 SQL 인터페이스 API
+
+**JDBC의 목적**  
+- Java 코드로 DB에 접속하고 SQL을 실행하고 결과를 받을 수 있게 함
+- DBMS 종류가 달라져도 동일한 코드 패턴으로 개발 가능(드라이버만 교체)
+
 
 ### JDBC 사용 방식
 
+1. JDBC 드라이버 로딩하기
+2. DBMS서버와 접속하기(Connection 생성)
+3. Statemet 또는 PreparedStatement  객체 생성하기
+4. SQL문 실행 하기
+5. 자원 해제
+
+
+<!-- 
 #### DriverManager
 
 1. `DriverManager`에게 `getConnection()` 호출하여 DB 정보로 연결(Connection 생성)
 2. Connection 객체에서 `prepareStatement(String sql)` 또는 `createStatement()`로 쿼리 전송
 3. 쿼리 결과(ResultSet 등) 처리
 4. Connection 닫기(해제)
+-->
+### JDBC 구성요소
 
-<details>
-<summary>Connection</summary>
+#### 🔗 Connection
 
 DB와 통신을 할 수 있게 해주는, 연결을 표현한 객체이다.
 
+#### 🔌 Driver
+
+- DBMS 벤더(MySQL, PostgreSQL, Oracle 등)가 제공하는 **JDBC 통신 프로토콜 구현체**
+- java.sql.Driver 인터페이스를 구현한 클래스
+- JDBC 규약에 따라 Connection 생성, PreparedStatement 생성 등을 수행
+
+<details><summary>Driver</summary>
+
+특정 장치(또는 시스템)와 OS/프로그램 사이를 이어주는 소프트웨어 인터페이스이다.
+이 인터페이스를 구현한 프로그램을 XXX드라이버라고 한다.
+
 </details>
 
+#### 📤 Statement
+
+Connection을 사용해 SQL을 실행 할수 있는 객체
+
+Connection을 사용해 DB에 SQL문을 전송하고, DB에서 처리된 결과를 다시 자바프로그램쪽으로 전달 할 수 있게 해주는 객체
+
+Connection이 도로라면, Statement는 데이터를 옮기는 트럭정도로 생각하면 된다.
+
 <details>
-<summary>DriverManager</summary>
+<summary>Statement 🆚 PreparedStetment</summary>
+
+**Statement**
+```
+Statement stmt = connection.createStatement();
+stmt.executeUpdate("insert into test values (" + id + ", '" + password + "')");
+```
+
+- SQL을 그대로 문자열 상태로 전송하는 방식
+
+- SQL Injection 위험 있음
+
+- 매 실행마다 SQL을 새로 분석/컴파일하므로 비효율적
+
+**PreparedStatement**
+
+Statement를 확장한 인터페이스.
+SQL 템플릿을 미리 컴파일하고, 바인딩 변수(?)를 사용해
+반복 실행 시 성능 최적화 + SQL Injection 방지 효과 제공.
+```
+PreparedStatement pstmt =
+    conn.prepareStatement("insert into test values(?, ?)");
+pstmt.setString(1, id);
+pstmt.setString(2, pwd);
+pstmt.executeUpdate();
+```
+
+PreparedStatement의 핵심:
+
+SQL Injection 방지
+
+미리 컴파일된 SQL(Precompiled Statement)
+
+실행 계획 캐싱(반복 실행 성능 ↑)
+
+</details>
+
+#### 📦 ResultSet
+
+SQL 실행 결과를 담는(가지고 있는) 객체
+
+#### 🚪 DriverManager
 
 JDBC 드라이버를 가져오고 URL등의 입력된 정보를 바탕으로 DB연결(Connection)을 생성해 주는 클래스
   
@@ -36,23 +108,21 @@ Connection 생성할 수 있는 DriverManager클래스의 메소드
 - `getConnection(String url, Properties info)` : url에 DB URL정보가 들어 있고, Properties에 key, value로 user와 password가 들어가 있다.  
 
 
-`DB URL` 구성요소  
-- jdbc(프로토콜) : Subprotocol(DBMS종류)://Subname(접속 대상 위치 정보(host:port:databaseName))[옵션(?key=value)]
+DB URL 구성요소  
+`jdbc(프로토콜) : Subprotocol(DBMS종류)://Subname(접속 대상 위치 정보(host:port:databaseName))[옵션(?key=value)]`
 
-</details>
 
-<details>
-<summary>Driver</summary>
-
-특정 장치(또는 시스템)와 OS/프로그램 사이를 이어주는 소프트웨어 인터페이스이다.
-이 인터페이스를 구현한 프로그램을 XXX드라이버라고 한다.
-
-</details>
 
 **문제점**
 
 - 매번 Connection을 새로 만드는 작업은 비용이 큼  
 - Connection 생성/종료 코드가 반복됨  
+
+**해결방법**
+
+- DB 연결을 여러 개 미리 생성해 두고 재사용하기(Connection Pool)
+- 개발자가 직접 Connection을 열고 닫는 반복 코드를 제거하고, 공통화된 관리 제공
+
 
 <details>
 <summary>Connection 비용이 큰 이유</summary>
@@ -64,11 +134,6 @@ Connection을 생성하기 위해 소켓 생성, 인증, 리소스 할당 과정
 - DBMS에서는 세션 생성, 메모리·버퍼 초기화, 스레드/프로세스 준비 등의 작업을 수행하는데, 이 리소스 할당 과정이 전체 비용의 대부분을 차지한다.
 
 </details>
-
-**해결방법**
-
-- DB 연결을 여러 개 미리 생성해 두고 재사용하기(Connection Pool)
-- 개발자가 직접 Connection을 열고 닫는 반복 코드를 제거하고, 공통화된 관리 제공
 
 <details>
 <summary>Connection Pool</summary>
@@ -101,13 +166,6 @@ Connection을 계속 생성/종료하는 비용을 줄이고, 성능을 크게 �
 
 3-Layer 아키텍처로 설계하고 DataSource로 DB연결을 추상화 하면 DB종류 변경 시 설정 파일만 수정하면 되고,  
 Repository를 인터페이스 기반으로 구현하고 의존성을 주입(DI)하면 DB 접근 프레임워크 변경 시 결합도가 낮아져 변경 비용을 줄일 수 있습니다.
-
-- **DB 종류 변경(MySQL → PostgreSQL)**  
-  DataSource 인터페이스 덕분에 설정만 변경하면 교체할 수 있어 코드 변경이 없습니다.
-
-- **DB 기술 변경(JDBC → JPA)**  
-  Repository **구현체**만 교체하면 되므로 변경 비용이 발생하지만  
-  Service와 Controller는 영향을 받지 않습니다.
 
 </details>
 
@@ -153,7 +211,10 @@ JdbcTemplate template = new JdbcTemplate(dataSource);
 
 DataSource를 생성자 주입하여 생성한다.
 
-### 2. JdbcTemplate 조회 쿼리
+### 2. 🔍 query()
+- **SELECT 다건 조회**에 사용
+
+**주요 메소드**
 
 `JdbcTemplate`의 `query()` 메서드를 사용하여 DB 데이터를 조회한다.
 
@@ -171,7 +232,7 @@ List<T> query(String sql, RowMapper<T> rowMapper, Object... args)
 
 `...` 은 **가변 인자(Varargs)** 로, 마지막 파라미터에서 주어진 타입(T)의 인자를 0개 이상 받을 수 있다.
 
-예:  
+**예시:**  
 `Object... args` → `Object arg1, Object arg2, ...` 여러 개 전달 가능
 
 - Java 5에서 추가된 문법  
@@ -206,7 +267,83 @@ List<T> query(String sql, RowMapper<T> rowMapper, Object... args)
 
 </details>
 
+
+### 3. 🔍 queryForObject()
+- **SELECT 결과가 정확히 1건일 때 사용**
+    - 결과 0건 → `EmptyResultDataAccessException`
+    - 결과 2건 이상 → `IncorrectResultSizeDataAccessException`
+
+**주요 메소드**
+```
+T queryForObject(String sql, Class<T> requiredType)
+T queryForObject(String sql, Class<T> requiredType, Object… args)
+T queryForObject(String sql, RowMapper<T> rowMapper)
+T queryForObject(String sql, RowMapper<T> rowMapper, Object… args)
+```
+
+### 4. 🔧 update()
+- **INSERT, DELETE, UPDATE 실행**
+- 내부적으로 **항상 PreparedStatement**를 사용함
+
+**주요 메소드**
+```
+int update(String sql)
+int update(String sql, Object… args)
+```
+- 반환값: **변경된 행(row)의 개수**
+
+### 🧩 PreparedStatementCreator 사용 메소드
+```
+List<T> query(PreparedStatementCreator psc, RowMapper<T> rowMapper)
+int update(PreparedStatementCreator psc)
+int update(PreparedStatementCreator psc, KeyHolder generatedKeyHolder)
+```
+
+### 🏗 PreparedStatementCreator
+[PreparedStatement]("")를 **직접 생성하고 옵션을 제어하기 위한 인터페이스**
+
+> ※ 참고: `query()`와 `update()`는 내부적으로 모두 PreparedStatement 기반으로 동작한다.
+
+**추상 메소드**
+```
+PreparedStatement createPreparedStatement(Connection connection)
+```
+
+**언제 사용하는가?**
+- 단순 SQL 실행 이상이 필요할 때:
+  - 자동 증가 키 반환(`auto increment`)
+  - BLOB / CLOB 데이터 처리
+  - PreparedStatement 생성 옵션 조정 (fetch size, timeout 등)
+  - JDBC 드라이버 특수 기능 사용
+  - Batch 튜닝
+- 인덱스 파라미터(`?`)에 값을 `setXXX()`로 직접 지정해야 할 때
+
+
+### 🔑 KeyHolder
+자동 증가 컬럼(PK)을 조회하기 위한 객체
+
+**사용 방식**
+```
+int update(PreparedStatementCreator psc, KeyHolder generatedKeyHolder)
+```
+PreparedStatementCreator 구현 시 
+
+preparedStatement(String sql, String[] keyColumnNames)메소드를 사용하면 KeyHolder 객체에서 getKey() 로 자동 증가된 값을 확인 할 수 있다.
+
+```
+Long id = keyHolder.getKey().longValue();
+```
+
+getKey()는 Number 타입이므로 longValue()로 변환하여 사용한다.
+
+
 # 3줄 요약
 1. Java 프로그램에서 DB와 연동 하려면 JDBC를 사용해야된다.  
 2. Spring에서 JDBC를 사용하는 방법중 하나는 JdbcTemplate이고, DataSource 객체를 생성해 JdbcTemplate에 주입 해 주어야 사용할 수 있다.  
 3. Connection pool은 connection을 미리 연결해 두고 관리한다.
+
+**추가 요약**
+1. select = query(), queryForObject()(1건 조회)  
+insert delect update = update()  
+모두 preparedStatement를 내부적으로 사용
+2. preparedStatementCreator 사용으로 preparedStatement 옵션 지정 가능
