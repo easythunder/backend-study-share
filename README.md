@@ -54,12 +54,6 @@ backend-study/
 
 
 
-## 📌 원칙
-
-- `study` → `summary` : 개인 학습 내용 검토 요청  
-- `summary` → `main` : 한 챕터 당 학습내용 최종 반영  
-- `feature/*` → `main` : 구조 변경/리팩토링 병합  
-
 ---
 
 ## 📝 Commit Message 규칙
@@ -98,3 +92,26 @@ backend-study/
 | 📝 | :memo: | 문서 작업 |
 | 🚀 | :rocket: | 신규 프로젝트 생성 |
 
+---
+
+## 🔀 PR 규칙 & 템플릿  
+
+### 📌 PR 규칙
+
+- `study` → `summary` : 개인 학습 내용 검토 요청  
+- `summary` → `main` : 한 챕터 당 학습내용 최종 반영  
+- `feature/*` → `main` : 구조 변경/리팩토링 병합  
+
+
+### 🪄 템플릿 적용 방법  
+
+PR 생성 시 URL 끝에 템플릿 파라미터를 추가합니다.  
+`?template=study-template.md`  
+
+-  예시 :  `https://github.com/ramgthunder12/backend-study-share/compare/study-ramgthunder?template=study-template.md`
+
+
+### 📄 템플릿 종류 
+
+- **study-template.md** : 개인 학습용 PR  
+- **maintenance-template.md** : 레포 구조/운영 변경 PR  
