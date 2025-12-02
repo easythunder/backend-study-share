@@ -334,7 +334,7 @@ preparedStatement(String sql, String[] keyColumnNames)메소드를 사용하면 
 Long id = keyHolder.getKey().longValue();
 ```
 
-getKey()는 Number 타입이므로 longValue()로 변환하여 사용한다.
+getKey()는 Number 타입이므로 longValue()또는 intValue()로 변환하여 사용한다.
 
 
 # 3줄 요약
