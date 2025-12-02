@@ -47,6 +47,16 @@ DB와 통신을 할 수 있게 해주는, 연결을 표현한 객체이다.
 
 </details>
 
+<details><summary><code>💡 피드백</code> : 왜 JDBC Driver는 왜 DBMS 벤더마다 제공해야하나요? 표준 인터페이스가 있는데 각자 구현하는데 이유가 있나요?
+
+</summary>
+
+DBMS 마다 내부 프로토콜, 실행 엔진, 전송 형식, SQL 방언, 네트워크 규격 든 내부 구조가 다르기 때문에
+각 벤더가 표준 인터페이스에 맞춰서 구현해 줘야 합니다.
+
+그래야 사용자가 표준화된 방식으로 연결, 쿼리, 결과 조회를 할 수 있습니다.
+</details>
+
 #### 📤 Statement
 
 Connection을 사용해 SQL을 실행 할수 있는 객체
@@ -93,6 +103,12 @@ SQL Injection 방지
 
 </details>
 
+<details><summary><code>💡 피드백</code> : query()와 update()가 둘 다 PreparedStatement 기반이라면, Statement는 언제 사용하나요?</summary>
+
+Statement는 파라미터 바인딩이 필요 없는 단순 SQL을 실행 하거나, DDL처럼 한번만 실행할 SQL을 다룰 때 사용합니다.
+
+</details>
+
 #### 📦 ResultSet
 
 SQL 실행 결과를 담는(가지고 있는) 객체
@@ -110,7 +126,6 @@ Connection 생성할 수 있는 DriverManager클래스의 메소드
 
 DB URL 구성요소  
 `jdbc(프로토콜) : Subprotocol(DBMS종류)://Subname(접속 대상 위치 정보(host:port:databaseName))[옵션(?key=value)]`
-
 
 
 **문제점**
@@ -161,7 +176,7 @@ Connection을 계속 생성/종료하는 비용을 줄이고, 성능을 크게 �
 - 내부적으로 JDBC를 사용하지만, SQL 작성과 매핑 코드를 간소화한다
 
 <details>
-<summary><code>피드백</code> DB 연동 방식을 바꿀 일이 생겼을 때(MySQL → PostgreSQL, JDBC → JPA),
+<summary><code>💡 피드백</code> : DB 연동 방식을 바꿀 일이 생겼을 때(MySQL → PostgreSQL, JDBC → JPA),
 어떤 구조로 프로젝트를 짜두면 변경 비용이 줄어드나요?</summary>
 
 3-Layer 아키텍처로 설계하고 DataSource로 DB연결을 추상화 하면 DB종류 변경 시 설정 파일만 수정하면 되고,  
@@ -281,6 +296,19 @@ T queryForObject(String sql, RowMapper<T> rowMapper)
 T queryForObject(String sql, RowMapper<T> rowMapper, Object… args)
 ```
 
+</details>
+
+<details><summary><code>💡 피드백</code> : 굳이 query()를 쓰지 않고 queryForObject()를 쓰는 이유가 뭔가요?</summary>
+
+query()를 사용하게 되면 결과 값이 0건, 1건, 2건 이상일 때를 직접 검사해야 합니다.
+하지만 queryForObject()를 사용하면 결과 개수에 따라 예외를 발생 시키므로, 코드를 더욱 간결하게 작성 할 수 있고 안전하다.
+
+안전한 이유
+예외를 정확히 처리하고 관리 할수 있어서 더 안전하다.
+예외 조건을 명확히 하지 않으면 문제를 감지하기 어렵고, 오류를 처리하거나 추적하기도 어려워지기 때문이다.
+
+</details>
+
 ### 4. 🔧 update()
 - **INSERT, DELETE, UPDATE 실행**
 - 내부적으로 **항상 PreparedStatement**를 사용함
@@ -336,6 +364,21 @@ Long id = keyHolder.getKey().longValue();
 
 getKey()는 Number 타입이므로 longValue()또는 intValue()로 변환하여 사용한다.
 
+
+</details>
+
+<details><summary><code>💡 피드백</code> : 자동 증가 PK를 KeyHolder로 받지 않고 SELECT LAST_INSERT_ID() 등을 직접 호출하면 어떤 문제점이 있나요?</summary>  
+
+LAST_INSERT_ID()는 MySQL에서 현재 커넥션에서 마지막으로 수행된 AUTO_INCREMENT 값을 반환합니다.
+
+커넥션 풀 환경에서는 커넥션을 여러 스레드에서 재사용할 수 있기 때문에, 내가 실행한 INSERT가 아닌 다른 스레드의 INSERT의 결과를 가져오는 동시성 문제가 발생할 수 있습니다.
+
+한 트랜잭션 안에서 여러 테이블에 INSERT를 수행하면 어떤 테이블의 AUTO_INCREMENT값인지 명확하게 구분되지 않아 데이터 무결성이 깨질 위험이 있습니다.
+
+LAST_INSERT_ID()는 MySQL의 고유 기능으로, 다른 DBMS마다 다른 방식으로 PK를 조회 해야 합니다.
+
+
+</details>
 
 # 3줄 요약
 1. Java 프로그램에서 DB와 연동 하려면 JDBC를 사용해야된다.  
