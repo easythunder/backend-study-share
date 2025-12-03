@@ -380,6 +380,38 @@ LAST_INSERT_ID()는 MySQL의 고유 기능으로, 다른 DBMS마다 다른 방�
 
 </details>
 
+## 🧯 Exception
+
+### ⚠️ DB 연동 시 Exception  
+
+JDBC가 설계될 때, 대부분의 메서드가 Checked Exception을 상속받은 SQLException을 던지도록 정의되었다.
+이는 DB 벤더마다 서로 다른 오류 코드와 메시지를 제공하기 때문에, 개발자가 반드시 예외를 처리하도록 강제하기 위한 설계이다.
+
+스프링에서는 JDBC의 SQLException을 그대로 사용하지 않고,
+이를 RuntimeException을 상속받은 DataAccessException으로 변환하여 던진다.  
+
+스프링에서 DataAccessException을 사용하는 이유는 다음과 같다:
+- 연동 기술에 상관없이 동일한 예외 계층으로 처리하기 위해서이다.
+Spring JDBC의 SQLException, JPA의 PersistenceException, Hibernate의 HibernateException 등
+다양한 기술에서 발생하는 예외를 모두 DataAccessException 계층으로 변환한다.
+
+따라서 개발자는 JDBC, JPA, Hibernate 등 어떤 기술을 사용하더라도 결국 DataAccessException만 처리하면 된다.
+또한 DataAccessException은 RuntimeException 계열이므로,
+CheckedException과 달리 컴파일 시점에 강제로 예외 처리를 요구하지 않는다.
+
+
+
+### 🗂️ DataAccessException 하위 클래스  
+
+- **DuplicateKeyException** : 회원가입 시 중복 키 삽입 등
+- **QueryTimeoutException** : DB 쿼리 시간 초과
+- **BadSqlGrammarException** : SQL 문법 오류
+- **CannotGetJdbcConnectionException** : DB 커넥션 획득 실패
+
+
+---
+
+
 # 3줄 요약
 1. Java 프로그램에서 DB와 연동 하려면 JDBC를 사용해야된다.  
 2. Spring에서 JDBC를 사용하는 방법중 하나는 JdbcTemplate이고, DataSource 객체를 생성해 JdbcTemplate에 주입 해 주어야 사용할 수 있다.  
