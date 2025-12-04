@@ -437,6 +437,17 @@ CheckedException과 달리 컴파일 시점에 강제로 예외 처리를 요구
 메소드가 사용되는 곳에서 모두 예외 처리를 해주어야 하기 때문에, 불필요한 try/catch와 throws 선언이 누적되어 전체 코드가 복잡해 질 수 있습니다.
 </details>
 
+<details>
+<summary><code>💡 피드백</code> : DataAccessException으로 변환해주는 핵심 컴포넌트는 무엇인가요?</summary>
+
+- JDBC : SQLExceptionTanslator
+- JPA, Hibernate : PersistenceExceptionTranslator
+
+각 연동 기술에서 발생하는 예외를 스프링의 공통 예외 계층인
+DataAccessException으로 변환해주는 컴포넌트입니다.
+
+</details>
+
 
 ### 🗂️ DataAccessException 하위 클래스  
 
