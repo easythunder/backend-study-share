@@ -431,6 +431,11 @@ Spring JDBC의 SQLException, JPA의 PersistenceException, Hibernate의 Hibernate
 또한 DataAccessException은 RuntimeException 계열이므로,
 CheckedException과 달리 컴파일 시점에 강제로 예외 처리를 요구하지 않는다.
 
+<details>
+<summary><code>💡 피드백</code>Checked Exception이 과도하면 코드에 어떤 문제가 생기나요?</summary>
+
+메소드가 사용되는 곳에서 모두 예외 처리를 해주어야 하기 때문에, 불필요한 try/catch와 throws 선언이 누적되어 전체 코드가 복잡해 질 수 있습니다.
+</details>
 
 
 ### 🗂️ DataAccessException 하위 클래스  
