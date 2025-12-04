@@ -456,6 +456,30 @@ DataAccessException으로 변환해주는 컴포넌트입니다.
 - **BadSqlGrammarException** : SQL 문법 오류
 - **CannotGetJdbcConnectionException** : DB 커넥션 획득 실패
 
+<details>
+<summary><code>💡 피드백</code> : DataAccessException은 어떤 방식으로 예외를 계층화하고 있나요?</summary>
+
+데이터접근과정에서 발생한 문제의 재시도 가능 여부와 원인을 기준으로 예외를 분류 합니다.  
+
+- Transient : 일시적 문제이며 동일 작업을 다시 시도하면 성공할 수 있음. 
+- NonTransient : 재시도해도 절대 성공 불가능 (SQL 문법 오류, 제약 위반 등)  
+
+```
+DataAccessException
+├── TransientDataAccessException
+│     ├── DeadlockLoserDataAccessException
+│     └── CannotGetJdbcConnectionException
+│
+└── NonTransientDataAccessException
+      ├── BadSqlGrammarException
+      ├── DataIntegrityViolationException
+      │       └── DuplicateKeyException
+      └── DataAccessResourceFailureException
+
+```
+
+</details>
+
 
 ---
 
