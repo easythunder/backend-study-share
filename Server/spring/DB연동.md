@@ -382,6 +382,38 @@ LAST_INSERT_ID()는 MySQL의 고유 기능으로, 다른 DBMS마다 다른 방�
 
 ## 🧯 Exception
 
+### 🔍 Error와 Exception
+
+`Error` : JVM 레벨에서 발생하며, 애플리케이션 코드로 복구할 수 없는 문제  
+`Exception` : 프로그램이 처리하여 복구할 수 있는 문제  
+
+```
+Exception
+├─ CheckedException
+| ├─ IOException
+| └─ SQLException
+|
+└─ UnCheckedException(RuntimeException)
+  └─ IndexOutOfBoundsException
+
+```
+
+**Exception을 상속받는 클래스**  
+
+1. Checked Exception: 반드시 try-catch로 처리하거나 throws로 선언해야 하며,
+   처리하지 않으면 컴파일 오류가 발생한다.
+2. Unchecked Exception(RuntimeException): 컴파일러가 예외 처리를 강제하지 않으며
+   프로그램 실행 중 발생할 수 있다.  
+
+
+
+#### 예외 처리 방식
+1. `try-catch` : 해당 위치에서 예외를 직접 처리하는 방식
+2. `throws` : 예외 처리를 호출한 메서드로 위임하는 방식
+
+- `throw` 키워드를 사용하면 예외 객체를 직접 생성하여 던질 수 있다.  
+
+
 ### ⚠️ DB 연동 시 Exception  
 
 JDBC가 설계될 때, 대부분의 메서드가 Checked Exception을 상속받은 SQLException을 던지도록 정의되었다.
