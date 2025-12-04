@@ -480,6 +480,14 @@ DataAccessException
 
 </details>
 
+<details>
+<summary><code>💡 피드백</code> : BadSqlGrammarException : SQL 문법 오류에서 SQL 문법 오류 이외에 예외 발생하는 상황이 있나요?</summary>
+
+DB가 SQL을 이해하지 못하는 모든 오류에서 발생합니다.  
+SQL 문법이 잘못되었거나, 테이블·컬럼·스키마가 존재하지 않거나, DB가 SQL을 파싱할 수 없는 모든 상황에서 BadSqlGrammarException이 발생할 수 있습니다.
+
+</details>
+
 
 ---
 
