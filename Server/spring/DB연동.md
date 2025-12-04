@@ -481,6 +481,15 @@ DataAccessException
 </details>
 
 <details>
+<summary><code>💡 피드백</code> : QueryTimeoutException : DB 쿼리 시간 초과에서 쿼리 말고 커넥션 단계에서도 발생할 수 있나요?</summary>
+
+SQLTimeoutException은 SQLException의 하위 클래스이기 때문에, 스프링의 SQLExceptionTranslator가 이를 QueryTimeoutException(DataAccessException 계열)으로 변환합니다.  
+
+따라서 실제로 쿼리가 실행되지 않고 커넥션 단계에서 타임아웃이 발생하더라도 QueryTimeoutException이 발생할 수 있습니다.
+
+</details>
+
+<details>
 <summary><code>💡 피드백</code> : BadSqlGrammarException : SQL 문법 오류에서 SQL 문법 오류 이외에 예외 발생하는 상황이 있나요?</summary>
 
 DB가 SQL을 이해하지 못하는 모든 오류에서 발생합니다.  
