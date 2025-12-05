@@ -498,6 +498,82 @@ SQL 문법이 잘못되었거나, 테이블·컬럼·스키마가 존재하지 �
 </details>
 
 
+--
+
+
+# Transaction  
+두개 이상의 쿼리를 논리적인 하나의 업무 단위의 작업으로 묶는것  
+- commit : 트랜잭션으로 묶인 모든 쿼리가 성공해서 쿼리 결과를 DB에 실제로 반영하는 것  
+- 롤백 : 트랜잭션으로 묶인 쿼리 중 하나라고 실패하면 쿼리 실행 결과를 취소하고, DB를 기존 상태로 되돌리는 것  
+
+## JDBC에서의 Transaction  
+- connection.setAutoCommit(false) : 트랜잭션 범위 시작  
+- connection.commit() : 트랜잭션 범위 종료 - 커밋  
+- connection.rollback() : 트랜잭션 범위 종료 - 롤백 
+
+## Spring에서의 Transcatoin 처리 
+
+### @Transaction 사용방법  
+1. PlatformTransactionManager 인터페이스를 빈 객체로 등록  
+2. @EnableTransactionManagement를 사용해 트랜잭션 어노테이션 활성화  
+
+
+### 트랜잭션 확인 방법 
+
+- log 사용법 spring-jcl : spring5 에서 사용하는 자체 로깅 모듈, 직접 로그 남기지 않음, 다른 로깅모듈을 사용해 로그 남김  
+
+1. 의존성 추가(pom.xml) → 프로젝트 업데이트(새로고침)  
+2. log 모듈 설정 파일 작성(src/main/resources/xxxx.xml) 
+
+## @Transaction에서의 Procxy 
+
+스프링은 @Transaction애노테이션을 이용해서 트랜잭션을 처리하기 위해 내부적으로 AOP를 사용한다. 따라서, 프록시가 Transaction시작과 commit, rollback기능을 사용한다.  
+
+## Transaction Rollback 
+
+원본 객체 메소드에서 RuntimeException이 발생하면, 프록시가 트랜잭션을 롤백 한다. 그다음 프록시가 프록시를 호출한 곳으로 예외를 던진다. 
+
+## Propagation 
+
+트랜잭션 전파 propagation 속성에 따라서 트랜잭션으로 묶이는 메소드가 달라진다. 트랜잭션 애노테이션이 달린 메소드 안에서 다른 메소드 호출 시 propagation 의 속성에 따라 새로운 트랜잭션을 생성할 것인지, 트랜잭션 범위에서 실행 될 것인지 설정 할 수있다. 
+
+### @Transaction  
+
+| 속성            | 타입           | 설명                                  | 기본값                  |
+| ------------- | ------------ | ----------------------------------- | -------------------- |
+| rollbackFor   | Object… args | 롤백을 수행할 예외 클래스명 목록                  | RuntimeException  |
+| noRollbackFor | Object… args | 예외가 발생해도 롤백하지 않을 예외 클래스명 목록         |                      |
+| value         | String       | 사용할 PlatformTransactionManager 빈 이름 | "" (공백)              |
+| propagation   | Propagation  | 트랜잭션 전파 타입 지정                       | Propagation.REQUIRED |
+| isolation     | Isolation    | 트랜잭션 격리 레벨 지정                       | Isolation.DEFAULT    |
+| timeout       | int          | 트랜잭션 제한 시간(초 단위)                    | -1                   |
+
+
+### Propagation 주요 값 
+
+- REQUIRED : 메서드를 수행하는 데 트랜잭션이 필요하다는 것을 의미. 진행중 트랜잭션 있으면 해당 트랜잭션 사용, 없으면 트랜잭션 생성  
+- MANDATORY : 메서드를 수행하는 데 트랜잭션이 필요하다는 것을 의미. 진행 중인 트랜잭션 없으면 익셉션 발생(REQUIRED과 차이점)  
+- REQUIRES_NEW : 항상 새로운 트랜잭션을 시작한다. 진행중 트랜잭션 존재 O ⇒ 기존 트랜잭션 일시 중지 → 새로운 트랜잭션 시작 / 중지 → 기존 트랜잭션 진행 / 중지  
+- SUPPORTS : 매서드가 트랜잭션을 필요로 하지는 않지만, 진행 중인 트랜잭션이 존재 → 해당 트랜잭션 사용.  
+- NOT_SUPPORTED : 메서드가 트랜잭션을 필요로 하지 않음을 의미. 진행 중인 트랜잭션이 존재 ⇒ 동안 트랜잭션은 일시 중지 → 메서드가 실행 / 종료 → 트랜잭션 진행 / 중지  
+- NEVER : 메서드가 트랜잭션을 필요로 하지 않는다. 진행 중인 트랜잭션 존재 하면 익셉션 발생  
+- NESTED : 진행 중인 트랜잭션 존재 ⇒ 기존 트랜잭션에 중첩된 트랜잭션에서 메서드 실행.JDBC 3.0 드라이버 사용할 때에만 적용 내용 : 진행 중인 트랜잭션 존재X ⇒ REQUIRED와 동일하게 동작. 
+
+
+### Isolation 주요값 
+
+- DEFAULT : 기본 설정 이용 - READ_UNCOMMITTED : 다른 트랜잭션이 커밋하지 않은 데이터를 읽을 수 있다.  
+- READ_COMMITTED : 다른 트랜잭션이 커밋한 데이터를 읽을 수 있다.  
+- REPEATABLE_READ : 처음에 읽어온 데이터와 두번째 읽어온 데이터가 동일한 값을 갖는다.  
+- SERIALIZABLE : 동일한 데이터에 대해서 동시에 두 개 이상의 트랜잭션을 수행할 수 없다. 
+
+
+### @EnableTransactionManagerment 주요 속성 
+
+- proxyTargetClass : 클래스를 이용해서 프록시를 생성할지 여부를 지정한다. 기본값 false(인터페이스를 이용해 프록시를 생성)  
+- order : 적용 순서를 지정한다. 기본값은 가장 낮은 우선순위에 해당하는 int의 최대값이다.
+
+
 ---
 
 
