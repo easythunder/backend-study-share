@@ -432,7 +432,7 @@ Spring JDBC의 SQLException, JPA의 PersistenceException, Hibernate의 Hibernate
 CheckedException과 달리 컴파일 시점에 강제로 예외 처리를 요구하지 않는다.
 
 <details>
-<summary><code>💡 피드백</code>Checked Exception이 과도하면 코드에 어떤 문제가 생기나요?</summary>
+<summary><code>💡 피드백</code> : Checked Exception이 과도하면 코드에 어떤 문제가 생기나요?</summary>
 
 메소드가 사용되는 곳에서 모두 예외 처리를 해주어야 하기 때문에, 불필요한 try/catch와 throws 선언이 누적되어 전체 코드가 복잡해 질 수 있습니다.
 </details>
@@ -447,6 +447,7 @@ CheckedException과 달리 컴파일 시점에 강제로 예외 처리를 요구
 DataAccessException으로 변환해주는 컴포넌트입니다.
 
 </details>
+
 
 
 ### 🗂️ DataAccessException 하위 클래스  
@@ -497,14 +498,10 @@ SQL 문법이 잘못되었거나, 테이블·컬럼·스키마가 존재하지 �
 
 </details>
 
-
---
-
-
 # Transaction  
 두개 이상의 쿼리를 논리적인 하나의 업무 단위의 작업으로 묶는것  
-- commit : 트랜잭션으로 묶인 모든 쿼리가 성공해서 쿼리 결과를 DB에 실제로 반영하는 것  
-- 롤백 : 트랜잭션으로 묶인 쿼리 중 하나라고 실패하면 쿼리 실행 결과를 취소하고, DB를 기존 상태로 되돌리는 것  
+- `commit` : 트랜잭션으로 묶인 모든 쿼리가 성공해서 쿼리 결과를 DB에 실제로 반영하는 것  
+- `rollback` : 트랜잭션으로 묶인 쿼리 중 하나라고 실패하면 쿼리 실행 결과를 취소하고, DB를 기존 상태로 되돌리는 것  
 
 ## JDBC에서의 Transaction  
 - connection.setAutoCommit(false) : 트랜잭션 범위 시작  
@@ -520,7 +517,7 @@ SQL 문법이 잘못되었거나, 테이블·컬럼·스키마가 존재하지 �
 
 ### 트랜잭션 확인 방법 
 
-- log 사용법 spring-jcl : spring5 에서 사용하는 자체 로깅 모듈, 직접 로그 남기지 않음, 다른 로깅모듈을 사용해 로그 남김  
+- spring-jcl : spring5 에서 사용하는 자체 로깅 모듈, 직접 로그 남기지 않음, 다른 로깅모듈을 사용해 로그 남김   
 
 1. 의존성 추가(pom.xml) → 프로젝트 업데이트(새로고침)  
 2. log 모듈 설정 파일 작성(src/main/resources/xxxx.xml) 
@@ -562,7 +559,8 @@ SQL 문법이 잘못되었거나, 테이블·컬럼·스키마가 존재하지 �
 
 ### Isolation 주요값 
 
-- DEFAULT : 기본 설정 이용 - READ_UNCOMMITTED : 다른 트랜잭션이 커밋하지 않은 데이터를 읽을 수 있다.  
+- DEFAULT : DB 드라이버가 제공하는 기본 격리 수준 이용, 기본 설정 이용  
+- READ_UNCOMMITTED : 다른 트랜잭션이 커밋하지 않은 데이터를 읽을 수 있다.  
 - READ_COMMITTED : 다른 트랜잭션이 커밋한 데이터를 읽을 수 있다.  
 - REPEATABLE_READ : 처음에 읽어온 데이터와 두번째 읽어온 데이터가 동일한 값을 갖는다.  
 - SERIALIZABLE : 동일한 데이터에 대해서 동시에 두 개 이상의 트랜잭션을 수행할 수 없다. 
@@ -572,6 +570,29 @@ SQL 문법이 잘못되었거나, 테이블·컬럼·스키마가 존재하지 �
 
 - proxyTargetClass : 클래스를 이용해서 프록시를 생성할지 여부를 지정한다. 기본값 false(인터페이스를 이용해 프록시를 생성)  
 - order : 적용 순서를 지정한다. 기본값은 가장 낮은 우선순위에 해당하는 int의 최대값이다.
+
+
+<details>
+<summary><code>💡 피드백</code> : @Transactional이 적용되지 않는 사례들은 뭐가 있나요?</summary>
+
+1. this로 내부 메소드 호출
+2. private 메소드
+3. final 클래스, 메소드(상속되지 않는 것)
+4. CheckeException 발생
+5. Bean 초기화 전에 호출되는 경우(@PostConstruct)
+6. 인터페이스 기반 프록시에서 인터페이스 미정의 메소드(prosyTargetClass=false, true 이면 가능)
+7. Spring이 관리 하지 않는 객체(new 로 생성된 객체)
+
+</details>
+
+
+<details>
+<summary><code>💡 피드백</code> : Isolation Level을 코드에서 READ_COMMITTED로 설정했을 때, DB가 REPEATABLE_READ라면 어떤 값이 적용되나요?</summary>
+
+- Spring은 커넥션에 isolation을 직접 설정하기 때문에, spring의 설정이 우선 적용된다.  
+- 스프링 → JDBC → DB 드라이버에게 트랜잭션 격리 수준을 설정한다.
+
+</details>
 
 
 ---
