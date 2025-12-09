@@ -203,7 +203,7 @@ Spring 컨테이너에서 생성·관리되는 객체.
 <details>
 <summary>주입(Injection)</summary>
 
-Spring이 빈을 다른 빈에 자동으로 넣어주는 기능.  
+Spring 컨테이너가 객체(빈)을 생성해 필요한 곳에 넣어주는 것.  
 Constructor Injection(생성자 주입), Setter Injection(세터 주입) 등이 있음.
 
 </details>
