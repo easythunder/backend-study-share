@@ -100,6 +100,194 @@ assembler를 도메인 마다 생성 시 문제점
 
 ## @Import
 
+다른 설정 클래스 또는 빈 정의를 현재 설정에 포함시키기 위해 사용  
+
+* @Import는 ComponentScan보다 먼저 처리됨
+* Spring Boot 자동 설정의 핵심 메커니즘
+
+
+### 다중 import 
+
+``` 
+@Import({AppConf1.class, AppConf2.class})
+```
+### 전이적 import  
+
+A를 등록하면 B와 C 모두 컨테이너에 등록됨  
+
+```
+@Import(B.class)
+class A { }
+
+@Import(C.class)
+class B { }
+```
+
+### import 대상
+
+
+
+<details> <summary> @Configuration 클래스</summary>  
+
+    ```
+    @Configuration
+    public class ConfigA {
+
+        @Bean
+        public String beanA() {
+            return "A";
+        }
+    }
+
+    @Configuration
+    @Import(ConfigA.class)
+    public class MainConfig {
+    }
+    ```
+
+    📌 결과  
+    beanA가 컨테이너에 등록됨
+
+</details>
+
+<details> <summary>일반 클래스 (빈으로 등록됨)</summary>  
+
+    ```
+    public class SimpleService {
+
+        public void hello() {
+            System.out.println("hello");
+        }
+    }
+
+    @Configuration
+    @Import(SimpleService.class)
+    public class AppConfig {
+    }
+    ```
+    📌 결과  
+    SimpleService가 @Component 없이도 빈으로 등록
+
+</details>
+
+
+<details> <summary>ImportSelector</summary>
+
+    ```
+    public class MyImportSelector implements ImportSelector {
+
+        @Override
+        public String[] selectImports(AnnotationMetadata metadata) {
+            return new String[] {
+                "com.example.ConfigA",
+                "com.example.ConfigB"
+            };
+        }
+    }
+
+    @Configuration
+    @Import(MyImportSelector.class)
+    public class AppConfig {
+    }
+    ```
+    📌 결과  
+    selectImports()에서 반환한 클래스들이 빈으로 등록  
+    동적 설정 구성 가능
+
+</details>
+
+
+<details> <summary>DeferredImportSelector</summary>
+
+    ```
+    public class MyDeferredImportSelector
+            implements DeferredImportSelector {
+
+        @Override
+        public String[] selectImports(AnnotationMetadata metadata) {
+            return new String[] {
+                "com.example.LateConfig"
+            };
+        }
+    }
+
+    @Configuration
+    @Import(MyDeferredImportSelector.class)
+    public class AppConfig {
+    }
+    ```
+    📌 특징  
+    모든 사용자 설정 처리 이후에 실행  
+    Spring Boot 자동 설정에서 사용됨
+
+</details>
+
+
+<details> <summary>ImportBeanDefinitionRegistrar</summary>  
+
+    ```
+    public class MyRegistrar
+            implements ImportBeanDefinitionRegistrar {
+
+        @Override
+        public void registerBeanDefinitions(
+                AnnotationMetadata metadata,
+                BeanDefinitionRegistry registry) {
+
+            RootBeanDefinition beanDefinition =
+                    new RootBeanDefinition(CustomService.class);
+
+            registry.registerBeanDefinition(
+                    "customService", beanDefinition);
+        }
+    }
+
+    @Configuration
+    @Import(MyRegistrar.class)
+    public class AppConfig {
+    }
+    ```
+    📌 결과  
+    코드로 빈 이름 + 빈 정의를 직접 등록  
+    가장 저수준, 가장 강력한 방식
+</details>
+
+
+
+
+## getBean()
+
+- getBean()이란 빈객체를 구할때 사용하는 메서드  
+
+* getBean()은 BeanFactory인터페이스에 정의 되어 있음  
+* AbstractApplicationContext에 getBean()구현 되어 있음
+* 모든 객체를 빈으로 만들 필요는 없음
+* 의존 주입 대상은 컨테이너를 통한 라이프사이클 및 제어하는것이 좋음으로 빈으로 관리 하는게 좋음
+
+### 발생할 수 있는 예외  
+
+- getBean("빈이름", 빈.class)
+  - 빈 이름이 없을 때:
+    NoSuchBeanDefinitionException
+  - 빈 이름은 존재하나 타입이 다를 때:
+    BeanNotOfRequiredTypeException
+
+- getBean(빈.class)
+  - 해당 타입의 빈이 없을 때:
+    NoSuchBeanDefinitionException
+  - 같은 타입의 빈이 여러 개이고
+    @Primary / @Qualifier로 결정 불가할 때:
+    NoUniqueBeanDefinitionException
+
+### 빈이름 결정
+빈 이름은 다음 중 하나로 결정됨
+  - @Bean 메서드명
+  - @Bean("이름")
+  - @Component 계열 클래스명(camelCase)
+  - @Component("이름")
+  - XML id
+  - alias
+
 ## 싱글톤
 
 같은 역할을 하는 객체의 정체성과 상태를 애플리케이션 전역에서 일관되게 유지하기 위해서
