@@ -353,5 +353,13 @@ public class AppConfig$$EnhancerBySpring extends AppConfig {
 - 도메인 : 업무의 규칙과 개념의 묶음 단위
 - 애플리케이션 : 도메인을 실행하고 흐름을 제어하는 단위  
 - IoC Inversion of Control : 객체의 생성과 제어 흐름을 개발자가 아니라 컨테이너가 담당하는 설계 원칙  
+
+<details><summary><code>💡 피드백</code> : DI와 IoC 관계를 한 문장으로 정리하면 어떻게 표현할수있나요?</summary>
+
+IoC는 객체의 생성과 주입, 제어를 개발자가 아닌 컨테이너가 담당하도록 하는 설계방식 입니다.  
+DI는 (IoC 환경에서) 한 객체가 필요로 하는 다른객체를 외부에서 주입받아 사용하는 방식입니다.
+</details>
+
+
 - CGLIB 프록시 클래스 :  
 - context : 현재 실행에 필요한 모든 정보와 환경을 묶어놓은 범위
