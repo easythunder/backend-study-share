@@ -77,3 +77,11 @@
 - 예외 발생 시
 - ClassNotFoundException, NoSuchMethodError 발생 시 classpath 문제
 - dependency 존재 여부 확인 -> scope 확인 -> 의존성 버전 충돌 여부 확인
+
+<details><summary><code>💡 피드백</code> : ClassNotFoundException, NoSuchMethodError 예시
+</summary>
+
+- ClassNotFounException : .class 파일이 classpath에 없어서 클래스 로딩 하지 못할때 발생하는 예외  
+- NoSuchMethodException : .class는 있지만 라이브러리 버전이 달라서 메서드를 찾지 못할 때 발생하는 애러
+ 
+</details>
