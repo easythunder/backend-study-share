@@ -66,6 +66,14 @@
 - 개발 시 컴파일된 클래스와 의존성 클래스는 target/build 디렉토리에 생성 된다.
 - 패키징 시 서블릿 스펙에 맞게 WEB-INF/classes, WEB-INF/lib구조로 포함된다.
 
+<details><summary><code>💡 피드백</code> : WEB-INF/lib 구조를 사용하는 이유가 있을까요?
+</summary>
+
+서블릿컨테이너의 classpath가 WEB-INF/lib, WEB-INF/classes임으로 해당 디렉토리에서 클래스를 로드합니다. 
+따라서 해당 위치에 클래스 파일과 라이브러리를 배치해야 애플리케이션이 실행됩니다.
+ 
+</details>
+
 - 예외 발생 시
 - ClassNotFoundException, NoSuchMethodError 발생 시 classpath 문제
 - dependency 존재 여부 확인 -> scope 확인 -> 의존성 버전 충돌 여부 확인
