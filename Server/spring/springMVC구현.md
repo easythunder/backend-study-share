@@ -1,4 +1,9 @@
 # MVC
+
+## 서버
+
+### 톰켓
+
 ## 설정
 ### pom.xml
 1. WAR 패키징 설정
@@ -21,17 +26,30 @@
    - view path
    - string으로, view 파일 매칭
 
+1. @EnableWebMvc
+2. WebMVCConfiguer
+3. configureDefaultServletHandling()
+4. configureViewResolvers()
+
 ### web.xml
 
+1. dispatcherServlet
+2. contextClass
+3. contextConfigLocation
+4. servlet filter
+
 ## 구현
+
 ### 컨트롤러  
 
-1. @Controller annotation
-2. @RequestParam
-    요청의 파라미터
-    인자 : value(파라미터 값의 이름), require(treu : 파라미터 없을때 400 Bad request, false : 파라미터 없을때 파라미터 값 null로 치환)
+1. @Controller annotation  
+2. @GetMapping()
+    - Http 매서드 annotiation
+3. @RequestParam
+    - 요청의 파라미터  
+    - 인자 : value(파라미터 값의 이름), require(true : 파라미터 없을때 400 Bad request, false : 파라미터 없을때 파라미터 값 null로 치환)
 3. Modle
-    View로 서비스 될 내용을 담는 객체
+    - View로 서비스 될 내용을 담는 객체
 4. View
     - JSP기준
     보여주는 페이지
