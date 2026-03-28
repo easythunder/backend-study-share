@@ -1,7 +1,5 @@
 # RULEBOOK.md
 
-# STUDY RULEBOOK
-
 ---
 
 <img width="701" height="588" alt="스크린샷 2026-03-28 오전 10 27 22" src="https://github.com/user-attachments/assets/1d38764d-9f81-4d3e-9f46-3e2d460f8d4c" />
