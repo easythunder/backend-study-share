@@ -4,7 +4,8 @@
 
 ---
 
-![스크린샷 2026-03-28 오전 10.11.33.png](RULEBOOK%20md/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2026-03-28_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_10.11.33.png)
+<img width="701" height="588" alt="스크린샷 2026-03-28 오전 10 27 22" src="https://github.com/user-attachments/assets/1d38764d-9f81-4d3e-9f46-3e2d460f8d4c" />
+
 
 [Google Sheet](https://docs.google.com/spreadsheets/d/1HV9H0SjYaAsSUiSVhyEC9blaCKdUB8nlY7XHpzz_kP0/edit?gid=0#gid=0)
 
