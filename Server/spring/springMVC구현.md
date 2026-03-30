@@ -45,9 +45,10 @@
 1. @Controller annotation  
 2. @GetMapping()
     - Http 매서드 annotiation
+    - 서블릿 컨텍스트 경로를 기준으로 작성
 3. @RequestParam
     - 요청의 파라미터  
-    - 인자 : value(파라미터 값의 이름), require(true : 파라미터 없을때 400 Bad request, false : 파라미터 없을때 파라미터 값 null로 치환)
+    - 인자 : value(파라미터 값의 이름, view에서 EL로 표기해 값을 사용할 수 있다.), require(true : 파라미터 없을때 400 Bad request, false : 파라미터 없을때 파라미터 값 null로 치환)
 3. Modle
     - View로 서비스 될 내용을 담는 객체
 4. View
@@ -85,3 +86,21 @@
 - NoSuchMethodException : .class는 있지만 라이브러리 버전이 달라서 메서드를 찾지 못할 때 발생하는 애러
  
 </details>
+
+서블릿 컨텍스트 경로
+웹서버 VS 웹애플리키이션서버
+서버 : 서비스를 제공하는 컴퓨터
+웹서버 : 웹에서 서비스를 제공하는 컴퓨터, http 요청을 받아 정적 리소스를 제공하거나, 동적요청을 was로 전달하는 서버 
+어떤 서비스? ip를 통해 컴퓨터에 접근해서 파일을 볼수 있게하는 서비스
+웹애플리케이션서버 : 웹서버가 파일을 전달할때 여러 값들을 처리하기위해 애플리케이션을 사용해 여러 값을 처리 해주는 서버, 애플리케이션을 실행하여 동적인 응답을 생성하는 서버
+```
+[Client]
+   ↓
+[Nginx]  ← 웹서버
+   ↓
+[Tomcat] ← WAS
+   ↓
+[Spring] ← 애플리케이션
+```
+그럼 Apache는? WebServer?
+: Apache HTTP Server (WebServer), Apache Tomcat(WAS), Apache Kafka(메시징시스템)
