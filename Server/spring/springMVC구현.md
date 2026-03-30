@@ -49,13 +49,40 @@
 3. @RequestParam
     - 요청의 파라미터  
     - 인자 : value(파라미터 값의 이름, view에서 EL로 표기해 값을 사용할 수 있다.), require(true : 파라미터 없을때 400 Bad request, false : 파라미터 없을때 파라미터 값 null로 치환)
-3. Modle
+
+<details><summary><code>💡 피드백</code> : @RequestParam으로 받은 값의 검증은 어떻게 처리하는 것이 좋은지 궁금해요
+</summary>
+
+@RequestParam은 단순히 값을 바인딩하는 역할만 하기 때문에, 검증은 별도로 처리해야 한다고 생각합니다.
+실무에서는 파라미터가 단순한 경우에는 @validated와 Bean Validation 어노테이션(@min, @notblank 등)을 함께 사용해 검증합니다.
+다만 파라미터가 많아지거나 구조가 생기면 DTO로 분리하고 @Valid를 사용하는 방식으로 확장합니다.
+검증 실패에 대한 예외는 GlobalExceptionHandler에서 일관된 형태로 처리합니다.
+ 
+</details>
+<details><summary><code>💡 피드백</code> : View Resolver가 어떤 방식으로 View를 찾는지 궁금해요
+</summary>
+
+ViewResolver는 설정된 prefix와 suffix를 기준으로 View를 찾습니다.  
+
+예를 들어  
+/WEB-INF/view/ 와 .jsp로 설정되어 있다면,
+컨트롤러에서 "hello"를 반환했을 때
+/WEB-INF/view/hello.jsp 파일을 찾아 실행합니다.  
+```
+prefix + viewName + suffix
+```
+prefix와 suffix설정은 @configuration에서 ViewResolver.jsp(String prefix, String suffix)에서 합니다.
+
+</details>
+
+4. Modle
     - View로 서비스 될 내용을 담는 객체
-4. View
+5. View
     - JSP기준
     보여주는 페이지
 
 디스패처 서블릿 :
+
 
 ## 빌드 도구
 웹 애플리케이션을 어디서든 실행 시키기 위해 패키징해주는 도구
@@ -87,8 +114,18 @@
  
 </details>
 
-서블릿 컨텍스트 경로
-웹서버 VS 웹애플리키이션서버
+- 서블릿 컨텍스트 경로
+<details><summary><code>💡 피드백</code> : 서블릿 컨텍스트 경로가 왜 필요한지 궁금해요
+</summary>
+
+서블릿 컨텍스트 경로는 하나의 서버에서 여러 웹 애플리케이션을 구분하기 위해 필요합니다.
+클라이언트 요청이 들어오면, 서버는 URL의 컨텍스트 경로를 기준으로 어떤 애플리케이션에 요청을 전달할지 결정합니다.
+예를 들어 /shop, /blog 같은 경로로 서로 다른 애플리케이션을 구분할 수 있습니다.
+이 과정이 있어야 요청이 올바른 애플리케이션과 서블릿으로 전달됩니다.
+
+</details>
+
+- 웹서버 VS 웹애플리키이션서버
 서버 : 서비스를 제공하는 컴퓨터
 웹서버 : 웹에서 서비스를 제공하는 컴퓨터, http 요청을 받아 정적 리소스를 제공하거나, 동적요청을 was로 전달하는 서버 
 어떤 서비스? ip를 통해 컴퓨터에 접근해서 파일을 볼수 있게하는 서비스
