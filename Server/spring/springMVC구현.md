@@ -1,8 +1,29 @@
-# MVC
+# SpringMVC
 
-## 서버
+## Server
 
-### 톰켓
+### Web Server VS Web Application Server
+- Server : 서비스를 제공하는 컴퓨터
+- Web Server : 웹에서 서비스를 제공하는 컴퓨터, http 요청을 받아 정적 리소스를 제공하거나, 동적요청을 was로 전달하는 서버 
+    - 어떤 서비스? ip를 통해 컴퓨터에 접근해서 파일을 볼수 있게하는 서비스
+- Web Application Server : 웹서버가 파일을 전달할때 여러 값들을 처리하기위해 애플리케이션을 사용해 여러 값을 처리 해주는 서버, 애플리케이션을 실행하여 동적인 응답을 생성하는 서버
+
+서버 구조
+```
+[Client]
+   ↓
+[Nginx]  ← 웹서버
+   ↓
+[Tomcat] ← WAS
+   ↓
+[Spring] ← 애플리케이션
+```
+- 그럼 Apache는? WebServer?  
+: Apache HTTP Server (WebServer), Apache Tomcat(WAS), Apache Kafka(메시징시스템)
+
+### 톰켓 
+
+WAS, 서블릿 컨테이너
 
 ## 설정
 ### pom.xml
@@ -20,28 +41,55 @@
 - 외부 톰캣 VS 내장 톰캣
 -->
 
-### Configuration
-1. 서블릿 디스패처
+### @Configuration
+Configuration 클래스의 설정 목록
+
+1. @EnableWebMvc
+    - MVC를 사용한다는 어노테이션 
+
+2. WebMVCConfiguer
+    - WebMVC 설정 인터페이스
+    - configureDefaultServletHandling()
+    - configureViewResolvers()
+
+3. Dispatcher Servlet
       - 모든 요청을 받아 컨트롤러로 위임하는 Front Controller
-      - 매핑경로 '/'로 주었을때 JSP/HTML/CSS 등을 바르게 처리 하기 위한 설정을 추가해야한다.(web.xml에) 
-3. View Resolver
+      - 매핑경로 '/'로 주었을때 JSP/HTML/CSS 등을 바르게 처리 하기 위한 설정을 추가해야한다.(=> 정적리소스 처리 방식 추가)
+
+4. View Resolver
    - view path
    - string으로, view 파일 매칭
    - jsp(접두사, 접미사)
 
-1. @EnableWebMvc
-2. WebMVCConfiguer
-3. configureDefaultServletHandling()
-4. configureViewResolvers()
+<details><summary><code>💡 피드백</code> : 모든 요청을 DispatcherServlet이 먼저 받으면, 그다음에는 어떤 기준으로 적절한 컨트롤러를 찾는지 궁금해요.
+</summary>
+
+DispatcherServlet이 모든 요청을 받은 다음, HandlerMapping이 요청 URL + HTTPMethod 기준으로 실행할 컨트롤러를 찾습니다.
+ 
+</details>
+
+<details><summary><code>💡 피드백</code> : /로 매핑했을 때와 *.do처럼 특정 패턴으로 매핑했을 때의 차이가 궁금해요.
+</summary>
+
+- / : 모든 요청을 스프링이 처리합니다. 따라서 정적 리소스도 스프링이 처리합니다.
+- 특정 패턴 : 특정 패턴에 해당되는 리소스만 스프링이 처리합니다.
+
+<정적 리소스를 스프링이 처리하게 되면>
+- 정적 리소스를 처리하는 핸들러를 생성하지 않아 404 오류 발생 합니다.
+- 정적 리소스(= 그대로 응답해주면 되는 파일)는 로직이 없어, 스프링을 거치게 된다면 성능과 시간 낭비가 생깁니다.
+ 
+</details>
    
 ### web.xml
 서블릿 컨테이너가 사용할 서블릿을 등록
 URL과 매핑, 초기 파라미터 설정을 정의하는 배포서술자
 
-1. dispatcherServlet
+1. DispatcherServlet
 2. contextClass
 3. contextConfigLocation
 4. servlet filter
+
+
 
 ## 구현
 
@@ -129,20 +177,11 @@ prefix와 suffix설정은 @configuration에서 ViewResolver.jsp(String prefix, S
 이 과정이 있어야 요청이 올바른 애플리케이션과 서블릿으로 전달됩니다.
 
 </details>
+<details><summary><code>💡 피드백</code> : 서블릿 컨텍스트를 사용하는 대표적인 실제 예시가 궁금해요.
+</summary>
 
-- 웹서버 VS 웹애플리키이션서버
-서버 : 서비스를 제공하는 컴퓨터
-웹서버 : 웹에서 서비스를 제공하는 컴퓨터, http 요청을 받아 정적 리소스를 제공하거나, 동적요청을 was로 전달하는 서버 
-어떤 서비스? ip를 통해 컴퓨터에 접근해서 파일을 볼수 있게하는 서비스
-웹애플리케이션서버 : 웹서버가 파일을 전달할때 여러 값들을 처리하기위해 애플리케이션을 사용해 여러 값을 처리 해주는 서버, 애플리케이션을 실행하여 동적인 응답을 생성하는 서버
-```
-[Client]
-   ↓
-[Nginx]  ← 웹서버
-   ↓
-[Tomcat] ← WAS
-   ↓
-[Spring] ← 애플리케이션
-```
-그럼 Apache는? WebServer?
-: Apache HTTP Server (WebServer), Apache Tomcat(WAS), Apache Kafka(메시징시스템)
+ServletContext는 애플리케이션 전체에서 공통으로 사용하는 데이터를 공유할때 주로 사용됩니다.
+파일업로드, 설정값을 context-param으로 동록해 모든 서블릿이 참조하거나, 접속자 수와 같은 전역 데이터를 저장해 여러 컴포넌트에서 공유하는데 활용됩니다.
+ 
+</details>
+
