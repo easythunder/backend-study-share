@@ -16,22 +16,27 @@
  
 </details>
 <!-- 
-- 서블릿 컨테이너  
+- 서블릿 컨테이너
 - 외부 톰캣 VS 내장 톰캣
 -->
 
 ### Configuration
 1. 서블릿 디스패처
-2. View Resolver
+      - 모든 요청을 받아 컨트롤러로 위임하는 Front Controller
+      - 매핑경로 '/'로 주었을때 JSP/HTML/CSS 등을 바르게 처리 하기 위한 설정을 추가해야한다.(web.xml에) 
+3. View Resolver
    - view path
    - string으로, view 파일 매칭
+   - jsp(접두사, 접미사)
 
 1. @EnableWebMvc
 2. WebMVCConfiguer
 3. configureDefaultServletHandling()
 4. configureViewResolvers()
-
+   
 ### web.xml
+서블릿 컨테이너가 사용할 서블릿을 등록
+URL과 매핑, 초기 파라미터 설정을 정의하는 배포서술자
 
 1. dispatcherServlet
 2. contextClass
@@ -45,7 +50,7 @@
 1. @Controller annotation  
 2. @GetMapping()
     - Http 매서드 annotiation
-    - 서블릿 컨텍스트 경로를 기준으로 작성
+    - DispatcherServlet이 받은 경로 기준으로 매핑된다.
 3. @RequestParam
     - 요청의 파라미터  
     - 인자 : value(파라미터 값의 이름, view에서 EL로 표기해 값을 사용할 수 있다.), require(true : 파라미터 없을때 400 Bad request, false : 파라미터 없을때 파라미터 값 null로 치환)
@@ -81,7 +86,7 @@ prefix와 suffix설정은 @configuration에서 ViewResolver.jsp(String prefix, S
     - JSP기준
     보여주는 페이지
 
-디스패처 서블릿 :
+디스패처 서블릿 : 모든 요청을 받아 컨트롤러로 위힘하는 Front Conttoller
 
 
 ## 빌드 도구
@@ -114,7 +119,7 @@ prefix와 suffix설정은 @configuration에서 ViewResolver.jsp(String prefix, S
  
 </details>
 
-- 서블릿 컨텍스트 경로
+- 서블릿 컨텍스트 : 서블릿 컨텍스트는 하나의 웹 애플리케이션 단위로 생성되는 객체로, 해당 애플리케이션 내의 서블릿들이 공통으로 사용하는 설정 정보와 자원을 공유하기 위한 실행 환경입니다.
 <details><summary><code>💡 피드백</code> : 서블릿 컨텍스트 경로가 왜 필요한지 궁금해요
 </summary>
 
